@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .blogs{
+            max-width: 600px;
+            box-shadow: 1px 2px 3px rgb(77, 77, 77);
+            text-align: left;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 4px;
+        }
+        #container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        img{
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+        }
+        .userInfo{
+            display: flex;
+            justify-items: center;
+        }
+        h1{
+            text-align: center;
+        }
+        span{
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+        .loading{
+            /* display: none; */
+            text-align: center;
+        }
+        body{
+            /* font-family: Arial, Helvetica, sans-serif; */
+        }
+    </style>
+</head>
+<body>
+    <h1>Blog posts</h1>
+    <div id="container">
+        <div>
+          
+        </div>
+    </div>
+            <div class="loading">
+                <h2>
+
+                    loading...
+                </h2>
+            </div>
+    
+</body>
+<script>
+    var container = document.getElementById("container")
+    var loading  =  document.querySelector(".loading")
+
+    getPost()
+    getPost()
+    getPost()
+
+    window.addEventListener("scroll",()=>{
+        const {scrollTop,scrollHeight,clientHeight} = document.documentElement
+        console.log(scrollHeight,scrollTop,clientHeight)
+        if(scrollHeight - scrollTop === clientHeight){
+            console.log("scroll")
+                // getPost()   
+                // getPost()   
+            
+        }
+    })
+
+    async function getPost(){
+
+        const postResponse = await fetch(`https://jsonplaceholder.typicode.com/posts/${getRandomNumber()}`)
+        const postData =  await postResponse.json()
+        console.log(postData)
+        const userResponse = await fetch(`https://randomuser.me/api`)
+        const userData =  await userResponse.json()
+        console.log(userData)
+
+        renderData({post:postData,userData})
+    }
+
+    function getRandomNumber(){
+        return Math.floor(Math.random()*100)+1
+    }
+
+    function renderData(data){
+        const {post,userData} =  data
+        const {email,name,picture} =  userData.results[0]
+        console.log(email,name,picture.large)
+        const postElement = document.createElement("div")
+        postElement.classList.add("blogs")
+        postElement.innerHTML=`
+            <h2>${post.title}</h2>
+            <p>${post.body}</p>
+            <div class="userInfo">
+                <img src="${picture.large}" alt="blog post image"/>
+                <span>${name.first} ${name.last}</span>
+            </div>
+        `   
+        container.append(postElement)
+
+    }
+</script>
+</html>
